@@ -5,8 +5,13 @@ import logging
 import time
 
 
+# Numpy random seed
+np.random.seed(3)
+
 # Update hosts
+index = 3
 names = np.random.randint(0, 2, (16, fhedns.Store.QUERY_LENGTH), dtype=np.uint8)
+names[index,:] = 1
 ips = np.random.randint(0, 2, (16, 32), dtype=np.uint8)
 
 class TestStore(unittest.TestCase):
@@ -24,6 +29,22 @@ class TestStore(unittest.TestCase):
 
     def test_update_is_compiled(self):
         self.assertIsNotNone(self.dns.circuit)
+
+    def test_query(self):
+        # Generate keys
+        self.dns.generate_keys(1)
+
+        #query = np.repeat(0, self.dns.QUERY_LENGTH)
+        query = names[index]
+        encrypted_query = self.dns.circuit.encrypt(query)
+
+        # Lookup query
+        encrypted_result = self.dns.lookup(encrypted_query)
+
+        # Decrypt
+        result = self.dns.circuit.decrypt(encrypted_result)
+
+        self.assertTrue(np.array_equal(result, ips[index]))
 
     def test_lookup_benchmark(self):
         # Generate keys

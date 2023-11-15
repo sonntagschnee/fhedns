@@ -4,8 +4,6 @@ import math
 
 
 class Store():
-    #MAX_SPLIT = 7
-    #QUERY_LENGTH = int(math.pow(MAX_SPLIT, 3))
     QUERY_LENGTH = math.ceil(math.log2(37))*63
     circuit = None
 
@@ -30,32 +28,11 @@ class Store():
             index = a*b + (a_not*(1 - b))
         
             # Check if all bits were equal for each row
-
-            # XNOR, then AND method
-            #while index.shape[1] != 1:
-            #    if index.shape[1]%2 == 1:
-            #        index[:,0] *= index[:,-1]
-            #
-            #    half_shape = index.shape[1]//2
-            #    index = index[:,:half_shape]*index[:,half_shape:half_shape*2]
-
-            # small table lookups method
-            #index = index.reshape((index.shape[0], -1, self.MAX_SPLIT))
-            #while index.shape[1] != 1:
-            #    if index.shape[1]%self.MAX_SPLIT != 0:
-            #        pass
-            #
-            #    index = index.reshape((index.shape[0], -1, self.MAX_SPLIT))
-            #    index = np.sum(index, axis=2)
-            #    index = index == self.MAX_SPLIT
-
             index = np.sum(index, axis=1)
             index += 169
             index = fhe.round_bit_pattern(index, rounder)
             index = index == 512
             index = index.reshape((-1, 1))
-
-            #index = query >> 1
 
             # Filter IP
             ip = index*ips

@@ -24,6 +24,9 @@ class TestStore(unittest.TestCase):
         # Update hosts
         self.dns.update(names, ips)
 
+        # Generate keys
+        self.dns.generate_keys(1)
+
     def tearDown(self):
         self.dns.circuit.cleanup()
 
@@ -31,9 +34,6 @@ class TestStore(unittest.TestCase):
         self.assertIsNotNone(self.dns.circuit)
 
     def test_query(self):
-        # Generate keys
-        self.dns.generate_keys(1)
-
         #query = np.repeat(0, self.dns.QUERY_LENGTH)
         query = names[index]
         encrypted_query = self.dns.circuit.encrypt(query)
@@ -47,9 +47,6 @@ class TestStore(unittest.TestCase):
         self.assertTrue(np.array_equal(result, ips[index]))
 
     def test_lookup_benchmark(self):
-        # Generate keys
-        self.dns.generate_keys(1)
-
         query = np.repeat(0, self.dns.QUERY_LENGTH)
         encrypted_query = self.dns.circuit.encrypt(query)
 
@@ -61,13 +58,3 @@ class TestStore(unittest.TestCase):
         end = time.time()
         
         self.logger.info('Ran lookup() %.2f in seconds.' % (end - start))
-
-    def test_generate_keys_benchmark(self):
-        start = time.time()
-        
-        # Generate keys
-        self.dns.generate_keys(1)
-        
-        end = time.time()
-        
-        self.logger.info('Ran generate_keys() %.2f in seconds.' % (end - start))

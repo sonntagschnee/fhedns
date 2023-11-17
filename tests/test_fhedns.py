@@ -34,7 +34,6 @@ class TestStore(unittest.TestCase):
         self.assertIsNotNone(self.dns.circuit)
 
     def test_query(self):
-        #query = np.repeat(0, self.dns.QUERY_LENGTH)
         query = names[index]
         encrypted_query = self.dns.circuit.encrypt(query)
 

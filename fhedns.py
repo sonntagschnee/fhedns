@@ -41,12 +41,8 @@ class Store():
             return ip
 
         inputset = [
-                (np.random.randint(0, 2, self.QUERY_LENGTH, dtype=np.uint8)),
-                (np.random.randint(0, 2, self.QUERY_LENGTH, dtype=np.uint8)),
                 (np.repeat(0, self.QUERY_LENGTH).astype(np.uint8)),
                 (np.repeat(1, self.QUERY_LENGTH).astype(np.uint8)),
-                (self.names[0]),
-                (self.names[1]),
                 ]
         
         cfg = fhe.Configuration(auto_adjust_rounders=True)

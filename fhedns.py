@@ -18,7 +18,6 @@ class Store():
         self.names_not = names_not = (np.logical_not(names)).astype(np.uint8)
         self.ips = ips
 
-        rounder = fhe.AutoRounder(2)
         @fhe.compiler({"query": "encrypted"})
         def lookup(query):
             # Test individual bits for quality using XNOR
@@ -29,9 +28,8 @@ class Store():
         
             # Check if all bits were equal for each row
             index = np.sum(index, axis=1)
-            index += 169
-            index = fhe.round_bit_pattern(index, rounder)
-            index = index == 512
+            index += 134
+            index = fhe.bits(index)[9]
             index = index.reshape((-1, 1))
 
             # Filter IP
@@ -45,7 +43,7 @@ class Store():
                 (np.repeat(1, self.QUERY_LENGTH).astype(np.uint8)),
                 ]
         
-        cfg = fhe.Configuration(auto_adjust_rounders=True)
+        cfg = fhe.Configuration(auto_adjust_rounders=True, show_graph=True)
         self.circuit = lookup.compile(inputset, cfg)
 
     def generate_keys(self, seed=None):
